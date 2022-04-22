@@ -54,4 +54,4 @@ app.post('/', urlencodedParser, (req, res) => {
     res.sendFile(__dirname + '/index.html');
 });
     
-app.listen(5005);
+app.listen(process.env.PORT || 5050);
