@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <style>
+        /* Style the list items */
+        ul li {
+        cursor: pointer;
+        position: relative;
+        padding: 12px 8px 12px 40px;
+        background: #eee;
+        font-size: 18px;
+        transition: 0.2s;
+        list-style: none;
+        }
+
+        /* Set all odd list items to a different color (zebra-stripes) */
+        ul li:nth-child(odd) {
+        background: #f9f9f9;
+        }
+    </style>
+
+
+
+
+    <title>Frisbee</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+  </head>
+  <body>
+    <div class="container">
+      <h1>Frisbee!</h1>
+      <form action="/home" method="POST">
+        <div class="form-group">
+          <label for="firstName">Name</label>
+          <input type="text" class="form-control" id="playerName" placeholder="Enter name" name="player_name">
+        </div>
+        <button type="submit" class="btn btn-primary">Submit</button>
+      </form>
+      <div class="container">
+        <ul id="roster"></ul>
+      </div>
+      
+
+        <script>
+        document.onload = loadRoster();
+
+        function loadRoster() {
+            var xhttp = new XMLHttpRequest();
+            xhttp.onreadystatechange = function() {
+            if (this.readyState == 4 && this.status == 200) {
+                this.responseText.split("\n").forEach(function (playerName) {
+                    addPlayer(playerName);
+                });
+            }
+            };
+            xhttp.open("GET", "/roster", true);
+            xhttp.send();
+        }
+
+
+        function addPlayer(playerName) {
+            if (playerName != "") 
+            {
+                var li = document.createElement("li");
+                var t = document.createTextNode(playerName);
+                li.appendChild(t);
+                document.getElementById("roster").appendChild(li);
+            }
+        }
+
+
+        </script>
+
+
+  </body>
+</html>
