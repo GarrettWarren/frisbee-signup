@@ -26,7 +26,7 @@ function msToMidnight() {
 
 var urlencodedParser = bodyParser.urlencoded({ extended: false })
     
-app.get('/home', (req, res) => {
+app.get('/', (req, res) => {
   res.sendFile(__dirname + '/index.html');
 });
 
@@ -39,7 +39,7 @@ app.get('/roster', (req, res) => {
   })
 });
     
-app.post('/home', urlencodedParser, (req, res) => {
+app.post('/', urlencodedParser, (req, res) => {
     console.log('New Player:', req.body.player_name);
     const data = req.body.player_name + '\n';
 
@@ -53,17 +53,5 @@ app.post('/home', urlencodedParser, (req, res) => {
 
     res.sendFile(__dirname + '/index.html');
 });
-
-app.get('/', urlencodedParser, (req,res) => {
-  res.sendFile(__dirname + "/login.html");
-});
-
-app.post('/', urlencodedParser, (req,res) => {
-  if (req.body.password === "cogbuut") {
-    res.sendFile(__dirname + "/index.html");
-  } else {
-    res.sendFile(__dirname + "/login.html")
-  }
-});
     
-app.listen(process.env.PORT || 5050);
+app.listen(5005);
