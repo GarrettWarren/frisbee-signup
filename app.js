@@ -20,7 +20,7 @@ function clearLog() {
 function msToMidnight() {
   var now = new Date();
   var then = new Date(now);
-  then.setHours(24, 0, 0, 0);
+  then.setHours(20, 10, 0, 0); //use 20 since EST = UTC-4
   return (then - now);
 }
 
