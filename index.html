@@ -55,7 +55,7 @@
             if (this.readyState == 4 && this.status == 200) {
                 document.getElementById("roster").innerHTML = "";
                 if (this.responseText.length > 0) {
-                    this.responseText.split(",").forEach(function (playerName) {
+                    this.responseText.split(",").reverse().forEach(function (playerName) {
                     addPlayer(playerName);
                 });
                 }
