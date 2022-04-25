@@ -27,10 +27,16 @@ app.get('/roster', (req, res) => {
 });
     
 app.post('/', urlencodedParser, (req, res) => {
-    console.log('New Player:', req.body.player_name);
-    const data = req.body.player_name;
-    roster.push(data);
-    res.sendFile(__dirname + '/index.html');
+    let name = req.body.player_name
+    if (!roster.includes(name)) {
+      console.log('New Player:', name);
+      const data = name;
+      roster.push(data);
+      res.sendFile(__dirname + '/index.html');
+    } else {
+      res.sendFile(__dirname + '/index.html');
+    }
+    
 });
     
 app.listen(process.env.PORT || 5050);

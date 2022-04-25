@@ -46,6 +46,25 @@
         <ul id="roster"></ul>
       </div>
 
+      <script>
+        function checkInput(name) {
+          var exists = false
+          var ul = document.getElementById("roster");
+          var players = ul.getElementsByTagName("li");
+          for (var i = 0; i < players.length; ++i) {
+            if (players[i].innerHTML === name) {
+              exists = true
+            }
+          }
+          if (exists) {
+            alert("Player name already used!");
+            return "";
+          } else {
+            return
+          }
+        }
+      </script>
+
         <script>
         document.onload = loadRoster();
 
