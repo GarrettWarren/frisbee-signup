@@ -1,27 +1,19 @@
 const express = require('express');
-const fs = require('fs');
-var bodyParser = require('body-parser');
 const app = express();
+var bodyParser = require('body-parser');
+const roster = [];
 repeatTimeout();
 
 function repeatTimeout() {
-  clearLog();
+  roster.length = 0;
   setTimeout(repeatTimeout, msToMidnight());
-};
-
-function clearLog() {
-  fs.writeFile('./roster.txt', "", err => {
-    if (err) {
-      console.error(err)
-    }
-  });
 };
 
 function msToMidnight() {
   var now = new Date();
   var then = new Date(now);
   then.setHours(4, 15, 0, 0); //use 4 since EST = UTC-4
-  return (then - now);
+  return Math.abs(then - now);
 }
 
 var urlencodedParser = bodyParser.urlencoded({ extended: false })
@@ -31,26 +23,13 @@ app.get('/', (req, res) => {
 });
 
 app.get('/roster', (req, res) => {
-  fs.readFile('./roster.txt', (err, data) => {
-    if (err) {
-      console.log(err)
-    }
-    res.send(data.toString());
-  })
+  res.send(roster.toString())
 });
     
 app.post('/', urlencodedParser, (req, res) => {
     console.log('New Player:', req.body.player_name);
-    const data = req.body.player_name + '\n';
-
-    fs.appendFile('./roster.txt', data, err => {
-      if (err) {
-        console.error(err)
-        return
-      }
-      //done!
-    });
-
+    const data = req.body.player_name;
+    roster.push(data);
     res.sendFile(__dirname + '/index.html');
 });
     

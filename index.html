@@ -20,27 +20,31 @@
     </style>
 
 
-
-
     <title>Frisbee</title>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
   </head>
   <body>
-    <div class="container">
+    <div class="container overflow-auto">
       <h1>Frisbee!</h1>
+      <h3 id="count"></h3>
+
+        <!-- Start WX Widget Code --><script src="https://www.weatherwx.com/weather-conditions-b/us/ma/natick.js"></script><!-- End WX Widget Code -->
+        <!-- Use this to prevent error when cycling between farenheit and celsius --> <script>function Cycle(){};</script>
+
+
       <form action="/" method="POST">
         <div class="form-group">
           <label for="firstName">Name</label>
-          <input type="text" class="form-control" id="playerName" placeholder="Enter name" name="player_name">
+          <input type="text" class="form-control" id="playerName" placeholder="Enter name" name="player_name" required>
         </div>
         <button type="submit" class="btn btn-primary">Submit</button>
+        <button type="button" id="refresh" class="btn btn-secondary" onclick="loadRoster()">Refresh</div>
       </form>
-      <div class="container">
+      <div>
         <ul id="roster"></ul>
       </div>
-      
 
         <script>
         document.onload = loadRoster();
@@ -49,29 +53,33 @@
             var xhttp = new XMLHttpRequest();
             xhttp.onreadystatechange = function() {
             if (this.readyState == 4 && this.status == 200) {
-                this.responseText.split("\n").forEach(function (playerName) {
+                document.getElementById("roster").innerHTML = "";
+                if (this.responseText.length > 0) {
+                    this.responseText.split(",").forEach(function (playerName) {
                     addPlayer(playerName);
                 });
+                }
+                getCount();
             }
             };
             xhttp.open("GET", "/roster", true);
             xhttp.send();
         }
 
-
         function addPlayer(playerName) {
-            if (playerName != "") 
-            {
-                var li = document.createElement("li");
-                var t = document.createTextNode(playerName);
-                li.appendChild(t);
-                document.getElementById("roster").appendChild(li);
-            }
+            var li = document.createElement("li");
+            var t = document.createTextNode(playerName);
+            li.appendChild(t);
+            document.getElementById("roster").appendChild(li);
+        }
+
+        function getCount() {
+            let n = document.getElementById("roster").getElementsByTagName("li").length;
+            document.getElementById("count").innerHTML="Count: "+ n.toString();
         }
 
 
         </script>
-
 
   </body>
 </html>
