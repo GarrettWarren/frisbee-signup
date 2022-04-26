@@ -2,6 +2,7 @@ const express = require('express');
 const app = express();
 var bodyParser = require('body-parser');
 const roster = [];
+var forcast = "";
 repeatTimeout();
 
 function repeatTimeout() {
