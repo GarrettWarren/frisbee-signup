@@ -29,38 +29,64 @@
     <div class="container overflow-auto">
       <h1>Frisbee!</h1>
       <h3 id="count"></h3>
-
         <!-- Start WX Widget Code --><script src="https://www.weatherwx.com/weather-conditions-b/us/ma/natick.js"></script><!-- End WX Widget Code -->
         <!-- Use this to prevent error when cycling between farenheit and celsius --> <script>function Cycle(){};</script>
-
-
-      <form action="/" method="POST">
-        <div class="form-group">
+        <div class="container">
           <label for="firstName">Name</label>
-          <input type="text" class="form-control" id="playerName" placeholder="Enter name" name="player_name" required>
+          <input type="text" class="form-control" id="postPlayerName" placeholder="Enter name" name="player_name" required>
+          <button type="button" onclick="postPlayer()" class="btn btn-primary">Submit</button>
+          <button type="button" id="refresh" class="btn btn-secondary" onclick="loadRoster()">Refresh</button>
         </div>
-        <button type="submit" class="btn btn-primary">Submit</button>
-        <button type="button" id="refresh" class="btn btn-secondary" onclick="loadRoster()">Refresh</div>
-      </form>
-      <div>
         <ul id="roster"></ul>
+      <div class="container">
+        <label for="firstName">Delete</label>
+        <input type="text" class="form-control" id="removePlayerName" placeholder="Enter name to remove" onsubmit="removePlayer()" name="player_name">
+        <button type="button" class="btn btn-primary" onclick="removePlayer()" onsubmit="removePlayer()">Remove</button>
       </div>
+  </div>
+
+
 
       <script>
-        function checkInput(name) {
-          var exists = false
-          var ul = document.getElementById("roster");
-          var players = ul.getElementsByTagName("li");
-          for (var i = 0; i < players.length; ++i) {
-            if (players[i].innerHTML === name) {
-              exists = true
-            }
-          }
-          if (exists) {
-            alert("Player name already used!");
-            return "";
+        function postPlayer() { 
+          let name = document.getElementById("postPlayerName").value;
+          if (name === "") {
+            alert("Please enter the player name");
           } else {
-            return
+            var xhr = new XMLHttpRequest();
+            xhr.open("POST", "/add", true);
+            xhr.setRequestHeader('Content-Type', 'application/json');
+            xhr.send(JSON.stringify({
+                player_name: name
+            }));
+            xhr.onreadystatechange = function() {
+              if (this.readyState == 4 && this.status == 200) {
+                  loadRoster();
+                  getCount();
+                  document.getElementById("postPlayerName").value="";
+              }
+            };
+          }
+        }
+      </script>
+      
+      <script>
+        function removePlayer() {  
+          let name = document.getElementById("removePlayerName").value;
+          if (name != "") {
+            var xhr = new XMLHttpRequest();
+            xhr.open("POST", "/delete", true);
+            xhr.setRequestHeader('Content-Type', 'application/json');
+            xhr.send(JSON.stringify({
+                player_name: name
+            }));
+            xhr.onreadystatechange = function() {
+              if (this.readyState == 4 && this.status == 200) {
+                  loadRoster();
+                  getCount();
+                  document.getElementById("removePlayerName").value="";
+              }
+            };
           }
         }
       </script>
