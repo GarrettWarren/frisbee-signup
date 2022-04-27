@@ -1,4 +1,4 @@
 # frisbee-signup
 
-Run with npm start.
+Run with npm start. 
 
