@@ -4,20 +4,9 @@ var bodyParser = require('body-parser');
 const res = require('express/lib/response');
 const roster = [];
 var forcast = "";
-repeatTimeout();
 
-function repeatTimeout() {
-  //this runs on startup, but we only only want to reset when msToMidnight==0
-  if (msToMidnight() < 60000){ 
-    clearRoster();
-  }
-  setTimeout(repeatTimeout, msToMidnight());
-};
-
-function msToMidnight(){
-  diff = new Date().setHours(24,0,0,0) - Date.now()
-  return diff
-}
+let schedule = require('node-schedule');
+schedule.scheduleJob('0 0 * * *', () => { clearRoster(); }) // run everyday at midnight
 
 var jsonencodedParser = bodyParser.json({ extended: false })
     
