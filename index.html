@@ -113,10 +113,12 @@
         }
 
         function addPlayer(playerName) {
-            var li = document.createElement("li");
-            var t = document.createTextNode(playerName);
-            li.appendChild(t);
-            document.getElementById("roster").appendChild(li);
+            if (playerName != "rosterheader") {
+              var li = document.createElement("li");
+              var t = document.createTextNode(playerName);
+              li.appendChild(t);
+              document.getElementById("roster").appendChild(li);
+            }
         }
 
         function getCount() {

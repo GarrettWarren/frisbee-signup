@@ -1,20 +1,22 @@
 const express = require('express');
 const app = express();
 var bodyParser = require('body-parser');
+const res = require('express/lib/response');
 const roster = [];
 var forcast = "";
 repeatTimeout();
 
 function repeatTimeout() {
-  roster.length = 0;
+  //this runs on startup, but we only only want to reset when msToMidnight==0
+  if (msToMidnight() < 60000){ 
+    clearRoster();
+  }
   setTimeout(repeatTimeout, msToMidnight());
 };
 
-function msToMidnight() {
-  var now = new Date();
-  var then = new Date(now);
-  then.setHours(4, 15, 0, 0); //use 4 since EST = UTC-4
-  return Math.abs(then - now);
+function msToMidnight(){
+  diff = new Date().setHours(24,0,0,0) - Date.now()
+  return diff
 }
 
 var jsonencodedParser = bodyParser.json({ extended: false })
@@ -24,31 +26,80 @@ app.get('/', (req, res) => {
 });
 
 app.get('/roster', (req, res) => {
-  res.send(roster.toString())
+  // read();
+  res.send(roster.toString());
 });
     
 app.post('/add', jsonencodedParser, (req, res) => {
-    console.log(req.body);
     let name = req.body.player_name
     if (!roster.includes(name)) {
       console.log('New Player:', name);
-      const data = name;
-      roster.push(data);
-      res.sendFile(__dirname + '/index.html');
-    } else {
-      res.sendFile(__dirname + '/index.html');
-    } 
+      roster.push(name);
+      // write();
+    }
+    res.sendFile(__dirname + '/index.html');
 });
 
 app.post('/delete', jsonencodedParser, (req, res) => {
   let name = req.body.player_name
-  const data = name;
-  const index = roster.indexOf(data);
-  if (index > -1) {
-    roster.splice(index, 1);
-    console.log('Removed Player:', name);
+  if (name === "deleteall") {
+    clearRoster();
+  } else {
+    const index = roster.indexOf(name);
+    if (index > -1) {
+      roster.splice(index, 1);
+      console.log('Removed Player:', name);
+      // write();
+    }
   }
   res.sendFile(__dirname + '/index.html');
 });
     
-app.listen(process.env.PORT || 5050);
+
+function clearRoster(){
+  roster.length=0;
+  roster.push("rosterheader")
+  write();
+}
+
+
+function write(){
+  const execSync = require("child_process").execSync;
+  let execString = "python ./dbx_io.py write "+roster.toString();
+  const result = execSync(execString);
+  console.log("write");
+  console.log(roster.toString());
+};
+
+function read(){
+  const execSync = require("child_process").execSync;
+  const result = execSync('python ./dbx_io.py read');
+  console.log("read")
+  console.log(result.toString())
+  result.toString().split(",").forEach(function (playerName) {
+    let trimmedName = playerName.trim()
+    if (!roster.includes(trimmedName)){
+      roster.push(trimmedName);
+    }
+  });
+}
+
+
+app.listen(process.env.PORT || 5050, function () {
+  read();
+});
+
+
+
+process
+  .on('SIGTERM', shutdown('SIGTERM'))
+  .on('SIGINT', shutdown('SIGINT'))
+  .on('uncaughtException', shutdown('uncaughtException'));
+
+  function shutdown(signal) {
+    return (err) => {
+      write();
+      console.log(`${ signal }...`);
+      process.exit();
+    };
+  }
