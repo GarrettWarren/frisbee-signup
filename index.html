@@ -34,7 +34,8 @@
           <label for="firstName">Name</label>
           <input type="text" class="form-control" id="postPlayerName" placeholder="Enter name" name="player_name" required>
           <button type="button" onclick="postPlayer()" class="btn btn-primary">Submit</button>
-          <button type="button" id="refresh" class="btn btn-secondary" onclick="loadRoster()">Refresh</button>
+          <button type="button" id="refresh" class="btn btn-secondary" onclick="refresh()">Refresh</button>
+          <text id="refreshNotification"/>
         </div>
         <ul id="roster"></ul>
       <div class="container">
@@ -44,6 +45,14 @@
       </div>
   </div>
 
+
+  <script>
+    function refresh() {
+      loadRoster();
+      document.getElementById("refreshNotification").innerHTML = "refresh complete"
+      setTimeout(function() { document.getElementById("refreshNotification").innerHTML = ""; }, 1000);
+    }
+  </script>
 
 
       <script>
